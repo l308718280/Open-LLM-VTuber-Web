@@ -4,7 +4,7 @@
 
 在尽量不修改现有前端的条件下，以 Java 重建 WebSocket 业务后端、HTTP 静态资源服务，以及 ASR、LLM、TTS 和可选工具编排能力。
 
-本目录是设计方案，不表示服务已经实现或通过联调。原接口清单继续保留在 [`backend.md`](../backend.md)，避免维护两份重复字段定义。
+本目录包含设计方案与逐消息实现手册，不表示服务已经实现或通过联调。原接口清单 [`backend.md`](../backend.md) 负责源码事实导航；07—09 负责字段样例、处理规则、异常补偿和资源契约。实现时结合源码核对，建议行为不等于旧服务端事实。
 
 全文约定：**已核实**来自当前前端代码；**建议**是新后端设计决策；**待确认**需要依赖实现、抓包或运行验证。示例时序均为新后端建议，不代表旧后端的真实行为。
 
@@ -18,6 +18,11 @@
 | [`04-media-and-resources.md`](04-media-and-resources.md) | 音频、图片、Live2D、资源路径和容量预算 |
 | [`05-tools-security-deployment.md`](05-tools-security-deployment.md) | 浏览器工具、群组、安全、部署和可观测性 |
 | [`06-implementation-acceptance.md`](06-implementation-acceptance.md) | 分阶段实施、验收矩阵、优先级和待决策事项 |
+| [`07-websocket-requests.md`](07-websocket-requests.md) | 17 类客户端请求：JSON 样例、校验、状态绑定、成功与失败响应 |
+| [`08-websocket-events.md`](08-websocket-events.md) | 20 类服务端事件：字段、嵌套对象、前端副作用及完整时序 |
+| [`09-http-api.md`](09-http-api.md) | HTTP 资源 GET：路径规则、原始响应、MIME、缓存、CORS 与安全 |
+
+直接开始实现接口时，先读 07—09；涉及并发、持久化和取消策略时再结合 01—06。
 
 ## 3. 推荐起点
 
