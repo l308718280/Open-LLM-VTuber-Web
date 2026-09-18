@@ -9,6 +9,7 @@ export class SseDecoder {
   private length = 0;
   private frameBytes = 0;
   private afterCR = false;
+  private crBytes = 0;
   private firstLine = true;
   private event = '';
   private data: string[] = [];
@@ -22,12 +23,17 @@ export class SseDecoder {
     for (const byte of chunk) {
       if (this.afterCR) {
         this.afterCR = false;
-        if (byte === 10) continue;
+        if (byte === 10) {
+          if (this.crBytes + 1 > this.limit) throw new HarnessError('limit');
+          if (this.frameBytes) this.frameBytes += 1;
+          continue;
+        }
       }
       this.frameBytes += 1;
       if (this.frameBytes > this.limit) throw new HarnessError('limit');
       if (byte === 10 || byte === 13) {
         this.afterCR = byte === 13;
+        this.crBytes = this.frameBytes;
         const frame = this.endLine();
         if (frame && consume(frame) === false) return;
       } else {

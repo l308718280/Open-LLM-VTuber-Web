@@ -32,6 +32,10 @@ test('bounded complete frames, incomplete lines, invalid UTF-8 and EOF fragments
   const parser = new SseDecoder(16);
   assert.throws(() => parser.push(bytes('data: ' + 'x'.repeat(11)), () => {}), { code: 'limit' });
   assert.throws(() => new SseDecoder(16).push(bytes(':1234567\n:1234567\n\n'), () => {}), { code: 'limit' });
+  assert.throws(() => new SseDecoder(10).push(bytes('data: x\r\n\r\n'), () => {}), { code: 'limit' });
+  const splitCRLF = new SseDecoder(8);
+  splitCRLF.push(bytes('data: x\r'), () => {});
+  assert.throws(() => splitCRLF.push(bytes('\n'), () => {}), { code: 'limit' });
   assert.throws(() => new SseDecoder().push(Uint8Array.of(255, 10), () => {}), { code: 'protocol' });
   const partial = new SseDecoder();
   partial.push(bytes('data: {}\n'), () => {});
